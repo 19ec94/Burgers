@@ -1,10 +1,10 @@
 %% ****** Time ******
-dt = 0.001; % time step size
-final_time = 0.3; % final time
+dt = 0.01; % time step size
+final_time = 0.1; % final time
 nt = uint32(final_time / dt); % total number of time steps
 %% ****** Domain ******
 xStart = 0; xEnd = 1; % Range of Domain
-nb_cells = 100;  % Number of cells
+nb_cells = 1000;  % Number of cells
 nb_particles = 30; % Number of particles per cell
 x = linspace(xStart, xEnd, nb_cells + 1); % discretize into cells
 dx = x(2) - x(1); % grid size
@@ -110,22 +110,23 @@ for time = 1:nt
 end
 %% EACT SOLUTION using characteristics
 u_exact = zeros(nt + 1, nb_cells); % stores  exact data for all time   
-% cell_centre is our X0;
 u_exact(1,:) = cell_centre; % Initial velocity
-X=cell_centre;  % initial position of characteristics
-u = u_exact(1,:); % variable for manipuation 
-for j = 1:nt
-    X = X - (u .* (dt) ); % position update -> X(t)= X(t-1)-u*dt
-    u = X;  % solution at the new time  u(X,t) = u((X0-u*t),t)
-    u_exact(j + 1, :) = u; % for data analysis
+X0=cell_centre;  % initial position of characteristics
+u = cell_centre; % initial velocity 
+counter =0;
+for j = 1:nt  % time loop
+    counter = counter+1;
+    X = X0 - (u .* (counter*dt) ); % position update -> X(0)= X(t)-u*dt
+    u = X;  % solution at the new time  u(X,t) = u((X(0)),t)
+    u_exact(j + 1, :) = u;% for data analysis
 end
 %% Error between particle solution and characteristic solution
-Error = norm(U(nt+1,:)-u_exact(nt+1,:));
+Error1 = norm(U(nt+1,:)-u_exact(nt+1,:));
 %%
 %% Plot 
-% If you want to plot, delete "%{" in the beginning and "%}" end of the
+% If you want to plot, delete --> "%{" in the beginning and "%}" end of the
 % following code snippet
-
+%{
 counter=0;
 for j=1:nt
     counter =counter+1;
@@ -135,3 +136,4 @@ for j=1:nt
     title(['t =',num2str(t)]);
     pause(dt)
 end
+%}
