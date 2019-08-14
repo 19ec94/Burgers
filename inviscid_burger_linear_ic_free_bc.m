@@ -1,11 +1,11 @@
 %% ****** Time ******
-dt = 0.01; % time step size
-final_time = 0.01; % final time
+dt = 0.001; % time step size
+final_time = 0.3; % final time
 nt = uint32(final_time / dt); % total number of time steps
 %% ****** Domain ******
 xStart = 0; xEnd = 1; % Range of Domain
-nb_cells = 10;  % Number of cells
-nb_particles = 25; % Number of particles per cell
+nb_cells = 100;  % Number of cells
+nb_particles = 30; % Number of particles per cell
 x = linspace(xStart, xEnd, nb_cells + 1); % discretize into cells
 dx = x(2) - x(1); % grid size
 %% ****** Particles ******
@@ -121,3 +121,17 @@ for j = 1:nt
 end
 %% Error between particle solution and characteristic solution
 Error = norm(U(nt+1,:)-u_exact(nt+1,:));
+%%
+%% Plot 
+% If you want to plot, delete "%{" in the beginning and "%}" end of the
+% following code snippet
+
+counter=0;
+for j=1:nt
+    counter =counter+1;
+    t = counter*dt;
+    plot(cell_centre,cell_centre,cell_centre,U(j,:),cell_centre,u_exact(j,:));
+    legend('initial','particle','exact');
+    title(['t =',num2str(t)]);
+    pause(dt)
+end
