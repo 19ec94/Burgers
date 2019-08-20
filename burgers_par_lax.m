@@ -5,24 +5,24 @@
 
 %% this is inviscid burgers case- DON'T CHANGE N=100, par=50
 final_time = 0.1; t=0;
-xStart = 0; xEnd = 1; nb_cells = 10000; nb_particles = 100;
+xStart = 0; xEnd = 1; nb_cells = 1000; nb_particles = 100;
 x = linspace(xStart, xEnd, nb_cells + 1);
 dx = x(2) - x(1);
 cell_centre = zeros(1, nb_cells);
 for i = 1:nb_cells
     cell_centre(i) = x(i) + (dx / 2);
 end
+
+cell_vel = 0 .* cell_centre;
+new_cell_vel = 0 .* cell_vel;
+
 cell_vel = sin(2 * pi * cell_centre); %CHANGE VELOCITY HERE
-CFL=0.99;
+CFL=1;
 dt = CFL*dx/max(cell_vel);
 nt = uint32(final_time / dt);
 total_nb_particles = nb_particles * nb_cells;
 par_old = zeros(4, total_nb_particles);
 par_new = par_old;
-
-cell_vel = 0 .* cell_centre;
-new_cell_vel = 0 .* cell_vel;
-
 U = zeros(nt + 1, nb_cells);
 %% Initial uniform distribution of articles
 rng('default');
@@ -33,9 +33,6 @@ for i = 1:nb_cells
     end
 end
 %% cell velocity initialization
-%cell_vel =cell_centre;
-cell_vel = sin(2 * pi * cell_centre);
-%cell_vel = 1-cos(cell_centre);
 U(1, :) = cell_vel(1, :);
 %% partical velocity initialization
 for i = 1:nb_cells
@@ -86,17 +83,15 @@ for time = 1:nt
     U(time + 1, :) = new_cell_vel(1, :);
 end
 %%
-%for j=1:nt
-%    plot(cell_centre,U(j,:),'k.');
-%    pause(dt)
-%end
+for j=1:nt
+    plot(cell_centre,U(j,:),'k.');
+    pause(dt)
+end
 %hold on 
 %******************************************
-%hlf = plot(cell_centre, g(cell_centre), 'b.');
+hlf = plot(cell_centre, g(cell_centre), 'b.');
 ue =zeros(nt+1,nb_cells);
-%u = 1-cos(cell_centre);
-u = sin(2 * pi * cell_centre);
-%u = g(cell_centre); %linear initial condition
+u = cell_vel;
 utemp = u;
 ue(1,:)=u;
 for time=1:nt
@@ -113,9 +108,9 @@ for time=1:nt
     ue(time+1,:)=u;
     %t = t + dt;
     %dt = CFL*dx/max(u);
-    %set(hlf,'YData',u);
+    set(hlf,'YData',u);
     %plot(cell_centre,u,'b.')
-    %drawnow;
+    drawnow;
 end
 %legend('Char.','LF','Location','northwest');
 %%

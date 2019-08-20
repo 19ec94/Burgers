@@ -1,6 +1,6 @@
 %% ****** Time ******
-dt = 0.01; % time step size
-final_time = 0.1; % final time
+dt = 0.0001; % time step size
+final_time = 0.0005; % final time
 nt = uint32(final_time / dt); % total number of time steps
 %% ****** Domain ******
 xStart = 0; xEnd = 1; % Range of Domain
@@ -121,7 +121,7 @@ for j = 1:nt  % time loop
     u_exact(j + 1, :) = u;% for data analysis
 end
 %% Error between particle solution and characteristic solution
-Error1 = norm(U(nt+1,:)-u_exact(nt+1,:));
+Error = norm(U(nt+1,:)-u_exact(nt+1,:));
 %%
 %% Plot 
 % If you want to plot, delete --> "%{" in the beginning and "%}" end of the
